@@ -14,8 +14,8 @@ class GithubViewModel(val githubRepository: GithubRepository) : ViewModel() {
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> get() = _users
 
-    private val _userInfo = MutableLiveData<User>()
-    val userInfo: LiveData<User> get() = _userInfo
+    private val _userInfo = MutableLiveData<List<User>>()
+    val userInfo: LiveData<List<User>> get() = _userInfo
 
     fun getUsersList(){
         viewModelScope.launch {
@@ -36,8 +36,8 @@ class GithubViewModel(val githubRepository: GithubRepository) : ViewModel() {
             var response=githubRepository.getUserInfo(username)
             if(response.isSuccessful){
                 response.body()?.items.let {
-                    var userInfo=it?.get(0)
-                    _userInfo.postValue(userInfo!!)
+                    //var userInfo=it?.get(0)
+                    _userInfo.postValue(it)
                 }
             }
             else {

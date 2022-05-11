@@ -12,7 +12,7 @@ interface GithubApiService {
         username: String="username",
     ): Response<UserResponse>
 
-    @GET("users")
+    @GET("users?")
     suspend fun getUserInfo(
         @Query("q")
         username: String,

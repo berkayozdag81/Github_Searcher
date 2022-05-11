@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.AsyncListUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.berkayozdag.githubsearcher.R
@@ -26,6 +27,8 @@ class GithubAdapter : RecyclerView.Adapter<GithubAdapter.GithubViewHolder>() {
 
     val differ = AsyncListDiffer(this, differCallback)
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GithubViewHolder {
         return GithubViewHolder(
             LayoutInflater.from(parent.context).inflate(
@@ -46,8 +49,9 @@ class GithubAdapter : RecyclerView.Adapter<GithubAdapter.GithubViewHolder>() {
         val user = differ.currentList[position]
         holder.itemView.apply {
             Glide.with(this).load(user.avatarUrl).into(ivUserImage)
-            tvSource.text = user.login
+            tvTitle.text = user.login
             tvDescription.text = user.type
+            tvSource.text = user.url
 
             setOnClickListener {
                 onItemClickListener?.let { it(user) }
