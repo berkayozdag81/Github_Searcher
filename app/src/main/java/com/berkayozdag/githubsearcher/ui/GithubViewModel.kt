@@ -17,6 +17,9 @@ class GithubViewModel(val githubRepository: GithubRepository) : ViewModel() {
     private val _userInfo = MutableLiveData<List<User>>()
     val userInfo: LiveData<List<User>> get() = _userInfo
 
+    private val _repos = MutableLiveData<List<User>>()
+    val repos: LiveData<List<User>> get() = _repos
+
     fun getUsersList(){
         viewModelScope.launch {
             var response=githubRepository.getUsersList()
@@ -42,6 +45,20 @@ class GithubViewModel(val githubRepository: GithubRepository) : ViewModel() {
             }
             else {
                 Log.d("Response", "Error occurred in getUserInfo()")
+            }
+        }
+    }
+
+    fun getRepoList(){
+        viewModelScope.launch {
+            var response=githubRepository.getRepoList()
+            if(response.isSuccessful){
+                response.body()?.items.let {
+                    _repos.postValue(it)
+                }
+            }
+            else {
+                Log.d("Response", "Error occurred in getReposList()")
             }
         }
     }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: GithubViewModel
-    private val githubAdapter = GithubAdapter()
+    private val githubAdapter = GithubAdapter(this)
     private val githubRepository=GithubRepository()
 
 
@@ -39,8 +39,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        viewModel.users.observe(this){response ->
-            githubAdapter.differ.submitList(response)
+        viewModel.users.observe(this){userList ->
+            githubAdapter.differ.submitList(userList.map {
+                GithubViewItem.User(it)
+            })
         }
 
         var job: Job? = null
@@ -56,10 +58,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.userInfo.observe(this){response ->
-            githubAdapter.differ.submitList(response)
+        viewModel.userInfo.observe(this){searchedUsers ->
+            githubAdapter.differ.submitList(searchedUsers.map {
+                GithubViewItem.User(it)
+            })
         }
-
     }
 
 

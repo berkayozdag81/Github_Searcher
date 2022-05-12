@@ -17,4 +17,11 @@ interface GithubApiService {
         @Query("q")
         username: String,
     ): Response<UserResponse>
+
+    @GET("repositories")
+    suspend fun getRepoList(
+        @Query("q")
+        username: String="reponame",
+    ): Response<UserResponse>
+
 }
