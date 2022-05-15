@@ -11,54 +11,31 @@ import kotlinx.coroutines.launch
 
 class GithubViewModel(val githubRepository: GithubRepository) : ViewModel() {
 
-    private val _users = MutableLiveData<List<User>>()
-    val users: LiveData<List<User>> get() = _users
+    private val _items = MutableLiveData<List<GithubViewItem>>()
+    val items : LiveData<List<GithubViewItem>> get() = _items
 
-    private val _userInfo = MutableLiveData<List<User>>()
-    val userInfo: LiveData<List<User>> get() = _userInfo
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading : LiveData<Boolean> get() = _isLoading
 
-    private val _repos = MutableLiveData<List<User>>()
-    val repos: LiveData<List<User>> get() = _repos
-
-    fun getUsersList(){
+    fun getViewItems(query : String? = null){
         viewModelScope.launch {
-            var response=githubRepository.getUsersList()
-            if(response.isSuccessful){
-                response.body()?.items.let {
-                    _users.postValue(it)
-                }
-            }
-            else {
-                Log.d("Response", "Error occurred in getUsersList()")
-            }
-        }
-    }
+            _isLoading.postValue(true)
+            val userResponse = githubRepository.getUsersList(query ?: "username")
+            val repoResponse = githubRepository.getRepoList(query ?: "reponame")
+            _isLoading.postValue(false)
 
-    fun getUserInfo(username:String){
-        viewModelScope.launch {
-            var response=githubRepository.getUserInfo(username)
-            if(response.isSuccessful){
-                response.body()?.items.let {
-                    //var userInfo=it?.get(0)
-                    _userInfo.postValue(it)
+            if(userResponse.isSuccessful && repoResponse.isSuccessful){
+                val users = userResponse.body()?.items.orEmpty().map {
+                    GithubViewItem.User(it)
                 }
-            }
-            else {
-                Log.d("Response", "Error occurred in getUserInfo()")
-            }
-        }
-    }
-
-    fun getRepoList(){
-        viewModelScope.launch {
-            var response=githubRepository.getRepoList()
-            if(response.isSuccessful){
-                response.body()?.items.let {
-                    _repos.postValue(it)
+                val repos = repoResponse.body()?.items.orEmpty().map {repos ->
+                    GithubViewItem.Repo(repos)
                 }
+                _items.postValue(users + repos)
             }
-            else {
-                Log.d("Response", "Error occurred in getReposList()")
+            else{
+                println(userResponse.message())
+                println(repoResponse.message())
             }
         }
     }

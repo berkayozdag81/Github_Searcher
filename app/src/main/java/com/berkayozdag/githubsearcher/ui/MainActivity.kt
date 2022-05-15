@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private val githubAdapter = GithubAdapter(this)
     private val githubRepository=GithubRepository()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -31,18 +31,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         viewModel = ViewModelProvider(this,UserViewModelProviderFactory(githubRepository))[GithubViewModel::class.java]
         setupRecyclerView()
-        viewModel.getUsersList()
+        viewModel.getViewItems()
     }
-
-
 
     override fun onStart() {
         super.onStart()
-
-        viewModel.users.observe(this){userList ->
-            githubAdapter.differ.submitList(userList.map {
-                GithubViewItem.User(it)
-            })
+        viewModel.items.observe(this){viewItems ->
+            githubAdapter.differ.submitList(viewItems)
+        }
+        viewModel.isLoading.observe(this){isLoading ->
+            binding.progressBar.isVisible = isLoading
         }
 
         var job: Job? = null
@@ -52,20 +50,12 @@ class MainActivity : AppCompatActivity() {
                 delay(SEARCH_NEWS_TIME_DELAY)
                 editable?.let {
                     if(editable.toString().isNotEmpty()) {
-                        viewModel.getUserInfo(editable.toString())
+                        viewModel.getViewItems(editable.toString())
                     }
                 }
             }
         }
-
-        viewModel.userInfo.observe(this){searchedUsers ->
-            githubAdapter.differ.submitList(searchedUsers.map {
-                GithubViewItem.User(it)
-            })
-        }
     }
-
-
 
     private fun setupRecyclerView() {
         binding.rvUsers.apply {

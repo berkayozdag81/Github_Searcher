@@ -1,5 +1,6 @@
 package com.berkayozdag.githubsearcher.api
 
+import com.berkayozdag.githubsearcher.models.RepoResponse
 import com.berkayozdag.githubsearcher.models.UserResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -9,19 +10,14 @@ interface GithubApiService {
     @GET("users")
     suspend fun getUsersList(
         @Query("q")
-        username: String="username",
+        query: String,
     ): Response<UserResponse>
 
-    @GET("users?")
-    suspend fun getUserInfo(
-        @Query("q")
-        username: String,
-    ): Response<UserResponse>
 
     @GET("repositories")
     suspend fun getRepoList(
         @Query("q")
-        username: String="reponame",
-    ): Response<UserResponse>
+        query: String,
+    ): Response<RepoResponse>
 
 }
