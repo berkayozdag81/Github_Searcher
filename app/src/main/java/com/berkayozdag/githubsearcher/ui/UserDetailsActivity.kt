@@ -19,6 +19,7 @@ class UserDetailsActivity : AppCompatActivity() {
         binding.nameText.text = people?.login.toString()
         binding.imageUrlText.text = people?.avatarUrl.toString()
         binding.userUrlTextView.text = people?.url.toString()
-
+        binding.userReposUrlText.text = people?.reposUrl.toString()
+        binding.userType.text = people?.type.toString()
     }
 }

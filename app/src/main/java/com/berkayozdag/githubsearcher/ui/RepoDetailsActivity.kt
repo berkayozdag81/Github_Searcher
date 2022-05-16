@@ -14,5 +14,12 @@ class RepoDetailsActivity : AppCompatActivity() {
         setContentView(view)
 
         val repos = intent.getSerializableExtra("repo") as? Repos
+
+        binding.repoNameText.text = repos?.name.toString()
+        binding.repoOwnerNameText.text = repos?.owner?.login.toString()
+        binding.repoOwnerAvatarUrltxt.text = repos?.owner?.avatar_url.toString()
+        binding.repoUrlTxt.text = repos?.url.toString()
+        binding.repoLanguageTxt.text = repos?.language.toString()
+        binding.repoBranchTxt.text = repos?.branches_url.toString()
     }
 }
