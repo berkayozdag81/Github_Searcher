@@ -1,5 +1,7 @@
 package com.berkayozdag.githubsearcher.models
 
+import java.io.Serializable
+
 data class Repos(
     val allow_forking: Boolean,
     val archive_url: String,
@@ -79,4 +81,4 @@ data class Repos(
     val visibility: String,
     val watchers: Int,
     val watchers_count: Int
-)
+) : Serializable

@@ -1,15 +1,16 @@
 package com.berkayozdag.githubsearcher.ui
 
-import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berkayozdag.githubsearcher.adapter.GithubAdapter
 import com.berkayozdag.githubsearcher.databinding.ActivityMainBinding
+import com.berkayozdag.githubsearcher.models.Repos
+import com.berkayozdag.githubsearcher.models.User
 import com.berkayozdag.githubsearcher.repository.GithubRepository
 import com.berkayozdag.githubsearcher.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,10 +19,10 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),GithubAdapter.ClickListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: GithubViewModel
-    private val githubAdapter = GithubAdapter(this)
+    private val githubAdapter = GithubAdapter(this,this)
     private val githubRepository=GithubRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,5 +63,18 @@ class MainActivity : AppCompatActivity() {
             adapter = githubAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
+    }
+
+    override fun onUserClicked(user: User) {
+        val intent =  Intent(this,UserDetailsActivity::class.java)
+        intent.putExtra("user",user)
+        startActivity(intent)
+
+    }
+
+    override fun onRepoClicked(repo: Repos) {
+        val intent =  Intent(this,RepoDetailsActivity::class.java)
+        intent.putExtra("repo",repo)
+        startActivity(intent)
     }
 }

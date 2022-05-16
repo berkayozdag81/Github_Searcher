@@ -4,13 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.berkayozdag.githubsearcher.R
-import com.berkayozdag.githubsearcher.databinding.ActivityMainBinding
 import com.berkayozdag.githubsearcher.databinding.ItemReposBinding
 import com.berkayozdag.githubsearcher.databinding.ItemUsersBinding
 import com.berkayozdag.githubsearcher.models.Repos
@@ -21,6 +17,7 @@ import kotlinx.android.synthetic.main.item_users.view.*
 
 class GithubAdapter(
     private val context: Context,
+    private val clickListener: ClickListener
 ) : RecyclerView.Adapter<GithubAdapter.GithubViewHolder>() {
 
     private val differCallback = object : DiffUtil.ItemCallback<GithubViewItem>() {
@@ -34,7 +31,6 @@ class GithubAdapter(
     }
 
     val differ = AsyncListDiffer(this, differCallback)
-    private var onItemClickListener: ((User) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GithubViewHolder {
        return when(viewType) {
@@ -73,6 +69,9 @@ class GithubAdapter(
             binding.Title.text = user.login
             binding.tvDescription.text = user.type
             binding.tvSource.text = user.url
+            binding.root.setOnClickListener {
+                clickListener.onUserClicked(user)
+            }
         }
     }
 
@@ -84,10 +83,14 @@ class GithubAdapter(
             binding.tvRepoTitle.text = repo.full_name
             binding.tvRepoDescription.text = repo.name
             binding.tvRepoSource.text = repo.commits_url
+            binding.root.setOnClickListener {
+                clickListener.onRepoClicked(repo)
+            }
         }
     }
 
-    fun setOnItemClickListener(listener: (User) -> Unit) {
-        onItemClickListener = listener
+    interface ClickListener{
+        fun onUserClicked(user : User)
+        fun onRepoClicked(repo: Repos)
     }
 }

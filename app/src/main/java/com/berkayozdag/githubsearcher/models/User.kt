@@ -1,6 +1,9 @@
 package com.berkayozdag.githubsearcher.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 
 data class User(
     @SerializedName("login") var login: String? = null,
@@ -22,4 +25,4 @@ data class User(
     @SerializedName("type") var type: String? = null,
     @SerializedName("site_admin") var siteAdmin: Boolean? = null,
     @SerializedName("score") var score: Int? = null
-)
+): Serializable
